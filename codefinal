@@ -1,0 +1,22 @@
+import os
+from os import chdir
+chdir("/Users/pierr/Documents/BTS SIO/AP/Python/ProjetPython")
+date = str(input("Veuillez rentrer la date en faisant : yyyy-mm-dd : "))            # Demande la date des logs
+                                                                                    # Vérification de l'existance du dossier demandé
+while (os.path.isfile('log_proxy_'+date+'.txt') == False) or (os.path.getsize('log_proxy_'+date+'.txt') == 0):
+	date = str(input("Le fichier n'existe pas ou est vide. Veuillez entrer une date correspondant à un fichier valide: "))
+fichier = "log_proxy_"+date+".txt"                                                  # Trouve le fichier avec la date
+f = open(fichier,'r')                                                               # Ouverture du fichier 
+sortie = open("insert_"+date+".sql",'w')                                            # Ouvre le fichier insert_date.sql
+lignes = f.readlines()                                                              # Lecture du fichier log_proxy lignes par lignes
+nbLignes = len(lignes)
+for i in range(nbLignes):                                                           # Boucle avec le nombre de lignes du premier fichier
+    lignesseparees=lignes[i].split(" ")                                             # Split les informations a chaque fois qu'il y a un espace
+    heure=lignesseparees[0]                                                         # Assigne la valeur du split 0 a la variable heure
+    ip=lignesseparees[1]                                                            # Assigne la valeur du split 1 a la variable ip
+    url=lignesseparees[4]                                                           # Assigne la valeur du split 4 a la variable url
+    resultat= date +";"+heure+";"+ip+";"+url+"\n"                                   # Donne le résultat de toutes les valeurs lignes par lignes
+    sortie.write("INSERT INTO TABLE proxy (ID, Adresse IP, Jour, Heure, URL)\nVALUES("+str(nbLignes)+", "+ip+", "+date+", "+heure+", "+url+")"+";"'\n') # Ecris le résultat dans le fichier instert_date.sql
+f.close()                                                                           # Fermeture du fichier Log_Proxy
+sortie.close()
+print("Les informations ont été ajoutés au programme log_proxy_"+date+".sql")
